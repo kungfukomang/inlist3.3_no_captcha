@@ -33,3 +33,4 @@ fi
 echo "[INLISLite] Siap dijalankan!"
 
 exec "$@"
+

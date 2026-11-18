@@ -95,7 +95,6 @@
         text-decoration: none;
     }
     .forgot-link:hover { color: #002f79; text-decoration: underline; }
-    .hcaptcha-container { margin: 32px 0; }
     .login-button {
         display: block;
         width: 100%;
@@ -122,9 +121,6 @@
         .login-container { padding: 20px 16px; }
         .login-card { padding: 28px 20px; }
         .login-description { font-size: 16px; }
-    }
-    @media (max-width: 360px) {
-        .hcaptcha-container { overflow-x: auto; }
     }
 </style>
 <?= $this->endSection('style'); ?>
@@ -162,38 +158,13 @@
                 <a class="forgot-link" href="<?= route_to('forgot') ?>">Lupa kata sandi?</a>
             </div>
 
-            <div class="hcaptcha-container" aria-label="Verifikasi keamanan">
-                <?php if (!empty($hcaptcha_site_key)): ?>
-                    <div class="h-captcha" data-sitekey="<?= esc($hcaptcha_site_key, 'attr') ?>"
-                         data-callback="onHcaptchaSuccess" data-expired-callback="onHcaptchaExpired"
-                         data-error-callback="onHcaptchaError"></div>
-                <?php else: ?>
-                    <div class="alert alert-warning" role="alert">hCaptcha belum dikonfigurasi. Hubungi administrator.</div>
-                <?php endif; ?>
-            </div>
-            <div id="captchaStatus" class="visually-hidden" role="status" aria-live="polite"></div>
-            <button type="submit" class="login-button" id="loginBtn" disabled>Masuk</button>
+            <button type="submit" class="login-button" id="loginBtn" style="margin-top: 28px;">Masuk</button>
         </form>
     </div>
     <p class="login-copyright"><?= date('Y') ?> Copyright &copy; Perpustakaan Nasional RI</p>
 </main>
 
-<?php if (!empty($hcaptcha_site_key)): ?>
-<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-<?php endif; ?>
 <script>
-function onHcaptchaSuccess() {
-    document.getElementById('loginBtn').disabled = false;
-    document.getElementById('captchaStatus').textContent = 'Verifikasi keamanan berhasil.';
-}
-function onHcaptchaExpired() {
-    document.getElementById('loginBtn').disabled = true;
-    document.getElementById('captchaStatus').textContent = 'Verifikasi keamanan kedaluwarsa. Silakan verifikasi kembali.';
-}
-function onHcaptchaError() {
-    document.getElementById('loginBtn').disabled = true;
-    document.getElementById('captchaStatus').textContent = 'Verifikasi keamanan gagal dimuat. Silakan coba kembali.';
-}
 document.getElementById('togglePasswordButton').addEventListener('click', function() {
     const passwordInput = document.getElementById('password');
     const showing = passwordInput.type === 'password';
@@ -202,24 +173,11 @@ document.getElementById('togglePasswordButton').addEventListener('click', functi
     this.setAttribute('aria-label', showing ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
     this.setAttribute('aria-pressed', String(showing));
 });
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-    <?php if (!empty($hcaptcha_site_key)): ?>
-    if (typeof hcaptcha === 'undefined') {
-        event.preventDefault();
-        document.getElementById('captchaStatus').textContent = 'hCaptcha belum dimuat. Muat ulang halaman dan coba lagi.';
-        return;
-    }
-    if (!hcaptcha.getResponse()) {
-        event.preventDefault();
-        document.getElementById('captchaStatus').textContent = 'Selesaikan verifikasi hCaptcha terlebih dahulu.';
-        return;
-    }
-    <?php endif; ?>
+document.getElementById('loginForm').addEventListener('submit', function() {
     const loginButton = document.getElementById('loginBtn');
     loginButton.classList.add('loading');
     loginButton.textContent = 'Memproses...';
     loginButton.setAttribute('aria-busy', 'true');
-    loginButton.disabled = true;
 });
 </script>
 <?= $this->endSection('page'); ?>
