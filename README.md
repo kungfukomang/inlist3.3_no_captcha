@@ -28,7 +28,7 @@ Metode ini paling direkomendasikan karena **tidak memerlukan instalasi manual PH
 
 1. **Clone repository ini:**
    ```bash
-   git clone https://github.com/<username>/<nama-repo>.git inlislite
+   git clone https://github.com/kungfukomang/inlist3.3_no_captcha.git inlislite
    cd inlislite
    ```
 
@@ -105,7 +105,7 @@ Untuk deployment di server produksi (VPS / Dedicated Server).
 
 2. **Clone & Jalankan Script Installer:**
    ```bash
-   git clone https://github.com/<username>/<nama-repo>.git /var/www/inlislite
+   git clone https://github.com/kungfukomang/inlist3.3_no_captcha.git /var/www/inlislite
    cd /var/www/inlislite
    chmod +x install.sh
    ./install.sh
