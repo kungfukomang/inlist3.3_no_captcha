@@ -205,6 +205,7 @@ File konfigurasi utama berada pada `.env` di root project. Beberapa konfigurasi 
    - Ukuran file SQL adalah ~9 MB. Naikkan nilai `max_allowed_packet` di `my.cnf` / `my.ini` menjadi minimal `64M`.
 
 ---
+NB: Butuh bantuan bisa wa ke nomer 081227232112
 
 ## 📄 Lisensi & Kredit
 
