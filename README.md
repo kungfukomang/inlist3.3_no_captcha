@@ -1,168 +1,215 @@
-# INLISLite
+# INLISLite v3.3
 
-## Apa itu INLISLite?
-
-Kenali **INLISLite**, satu aplikasi dengan berbagai kemudahan dalam genggaman Anda. Mulai dari pencarian koleksi, peminjaman, keanggotaan, hingga akses literatur digital. Dirancang untuk membantu seluruh perpustakaan di Indonesia demi memenuhi keperluan pemustaka di berbagai daerah. Temukan inspirasi, referensi, dan wawasan baru dalam satu aplikasi ini.
-
-**INLISLite, buat dunia literasi jadi lebih dekat dan menyenangkan! #SalamLiterasi**
-
-Aplikasi ini dirancang langsung oleh **Divisi Pusat Data dan Informasi**, Perpustakaan Nasional Republik Indonesia, untuk memberikan pengalaman terbaik dalam mengelola perpustakaan berbasis digital demi mewujudkan modernisasi di lingkup perpustakaan.
-
-Aplikasi ini dibangun di atas framework **CodeIgniter 4**, sebuah framework PHP full-stack yang ringan, cepat, fleksibel, dan aman.
+<p align="center">
+  <img src="public/perpusnas.png" alt="Logo Perpustakaan Nasional RI" width="140">
+  <br>
+  <b>Sistem Otomasi Perpustakaan Terintegrasi Berbasis Web</b>
+  <br>
+  <i>Dikembangkan oleh Perpustakaan Nasional Republik Indonesia (Perpusnas RI)</i>
+</p>
 
 ---
 
-## Persyaratan Server
+## 📌 Tentang INLISLite
 
-- PHP versi 7.3 atau lebih tinggi (disarankan PHP 8.x)
-- Ekstensi PHP yang wajib aktif:
-  - `intl`
-  - `mbstring`
-  - `mysqlnd`
-  - `json` (aktif secara default, jangan dimatikan)
-  - `xml` (aktif secara default, jangan dimatikan)
-  - `curl` (jika menggunakan library `HTTP\CURLRequest`)
-- MySQL / MariaDB
-- Composer
-- Web server (Apache/Nginx) atau bisa menggunakan server bawaan PHP untuk pengembangan lokal
+**INLISLite** (*Integrated Library System*) adalah perangkat lunak otomasi perpustakaan yang dibangun untuk membantu seluruh jenis perpustakaan di Indonesia — mulai dari perpustakaan umum, perguruan tinggi, sekolah, hingga instansi pemerintah dan swasta. 
+
+INLISLite v3.3 dibangun di atas framework **CodeIgniter 4**, memberikan arsitektur yang modern, ringan, aman, dan modular untuk memenuhi kebutuhan otomasi perpustakaan, pencarian katalog (OPAC), peminjaman, pengembalian, sirkulasi, dan pengelolaan literatur digital.
 
 ---
 
-## Cara Menjalankan Aplikasi
+## 🚀 Panduan Instalasi Cepat
 
-### 1. Clone / Extract Project
+Pilih salah satu metode instalasi yang paling sesuai dengan server atau lingkungan Anda:
 
-Pastikan seluruh source code INLISLite sudah berada di folder project Anda, misalnya:
+### 🐳 Opsi 1: Menggunakan Docker (Rekomendasi — Paling Mudah & Otomatis)
 
-```
-D:\laragon\www\inlislite
-```
+Metode ini paling direkomendasikan karena **tidak memerlukan instalasi manual PHP, Composer, maupun MySQL di host Anda**. Semua dependensi dan database otomatis terkonfigurasi.
 
-### 2. Install Dependency via Composer
+1. **Clone repository ini:**
+   ```bash
+   git clone https://github.com/<username>/<nama-repo>.git inlislite
+   cd inlislite
+   ```
 
-Masuk ke folder project, lalu jalankan:
+2. **Jalankan Docker Compose:**
+   ```bash
+   docker compose up -d
+   ```
+   > **Catatan:** Saat pertama kali dijalankan, kontainer database MariaDB akan otomatis mengimpor data awal dari `inlislite_v33.sql`, dan kontainer web server akan otomatis menyiapkan `.env` dan dependensi.
 
-```bash
-composer install
-```
-
-Jika sebelumnya sudah pernah di-install dan ingin memperbarui:
-
-```bash
-composer update
-```
-
-### 3. Konfigurasi File Environment (.env)
-
-Salin file `env` menjadi `.env`:
-
-```bash
-cp env .env
-```
-
-Buka `.env`, lalu sesuaikan minimal bagian berikut:
-
-```env
-CI_ENVIRONMENT = development
-
-app.baseURL = 'http://localhost:8080/'
-
-database.default.hostname = localhost
-database.default.database = inlislite_v33
-database.default.username = root
-database.default.password =
-database.default.DBDriver = MySQLi
-```
-
-Sesuaikan `hostname`, `username`, `password`, dan `database` dengan konfigurasi MySQL di komputer/server Anda.
-
-### 4. Buat Database & Import File SQL
-
-Buat database baru terlebih dahulu (misalnya melalui phpMyAdmin, HeidiSQL, atau command line):
-
-```sql
-CREATE DATABASE inlislite_v33 CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-```
-
-Kemudian import file database yang ada di folder download, `inlislite_v33.sql`, ke database tersebut.
-
-**Via command line:**
-
-```bash
-mysql -u root -p inlislite_v33 < path/to/inlislite_v33.sql
-```
-
-**Via phpMyAdmin:**
-1. Pilih database `inlislite_v33` yang baru dibuat.
-2. Buka tab **Import**.
-3. Pilih file `inlislite_v33.sql`.
-4. Klik **Go / Kirim** dan tunggu proses import selesai.
-
-### 5. Jalankan Aplikasi
-
-**Penting:** Sejak CodeIgniter 4, file `index.php` **tidak lagi berada di root project**, melainkan di dalam folder `public/`. Web server harus diarahkan ke folder `public`, bukan ke root project.
-
-**Opsi A — Menggunakan built-in server PHP (untuk development/testing cepat):**
-
-```bash
-php spark serve
-```
-
-Secara default aplikasi akan berjalan di `http://localhost:8080`.
-
-**Opsi B — Menggunakan Laragon / Apache / Nginx:**
-
-Arahkan document root virtual host ke folder:
-
-```
-inlislite/public
-```
-
-Contoh virtual host Nginx:
-
-```nginx
-server {
-    listen 80;
-    server_name inlislite.test;
-    root /path/to/inlislite/public;
-    index index.php;
-
-    location / {
-        try_files $uri $uri/ /index.php$is_args$args;
-    }
-
-    location ~ \.php$ {
-        fastcgi_pass 127.0.0.1:9000;
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        include fastcgi_params;
-    }
-}
-```
-
-Jangan mengarahkan web server ke folder root project lalu mengakses `public/...` — ini praktik yang tidak disarankan karena akan membuka logic dan file framework yang seharusnya tersembunyi.
-
-### 6. Verifikasi
-
-Buka browser dan akses baseURL yang telah dikonfigurasi (misalnya `http://localhost:8080` atau `http://inlislite.test`). Jika koneksi database dan konfigurasi `.env` sudah benar, halaman utama INLISLite akan tampil.
+3. **Akses Aplikasi di Browser:**
+   - **INLISLite Web (OPAC & Login Petugas):** [http://localhost:8080](http://localhost:8080)
+   - **phpMyAdmin (Manajemen Database):** [http://localhost:8081](http://localhost:8081) *(User: `root`, Password: `root`)*
 
 ---
 
-## Troubleshooting Singkat
+### 🪟 Opsi 2: Menggunakan Laragon / XAMPP di Windows
 
-| Masalah | Kemungkinan Penyebab |
-|---|---|
-| Halaman blank / error 500 | Cek permission folder `writable/`, cek log di `writable/logs/` |
-| Error koneksi database | Cek kredensial di `.env`, pastikan database sudah dibuat & di-import |
-| CSS/JS tidak muncul | Cek `app.baseURL` di `.env` sudah sesuai dengan URL akses |
-| `index.php` tidak ditemukan | Pastikan document root web server mengarah ke folder `public/`, bukan root project |
+Cocok untuk pengguna Windows atau komputer lokal perpustakaan.
+
+1. **Clone repository ke folder root web server:**
+   - Untuk Laragon: `C:\laragon\www\inlislite`
+   - Untuk XAMPP: `C:\xampp\htdocs\inlislite`
+
+2. **Jalankan Setup Otomatis:**
+   - Buka folder project, lalu **double-click** file `setup.bat`.
+   - Atau buka terminal Laragon dan jalankan:
+     ```bash
+     composer install
+     cp env.sample .env
+     ```
+
+3. **Buat Database & Import File SQL:**
+   - Buka **HeidiSQL** (bawaan Laragon) atau **phpMyAdmin**.
+   - Buat database baru:
+     ```sql
+     CREATE DATABASE inlislite_v33 CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+     ```
+   - Import file `inlislite_v33.sql` ke database `inlislite_v33`.
+
+4. **Konfigurasi `.env`:**
+   Pastikan pengaturan database di file `.env` sudah sesuai:
+   ```env
+   CI_ENVIRONMENT = development
+   app.baseURL = 'http://localhost:8080/'
+
+   database.default.hostname = localhost
+   database.default.database = inlislite_v33
+   database.default.username = root
+   database.default.password =
+   database.default.DBDriver = MySQLi
+   ```
+
+5. **Jalankan Aplikasi:**
+   - **Via CLI / PHP Spark:**
+     ```bash
+     php spark serve
+     ```
+     Buka di browser: [http://localhost:8080](http://localhost:8080)
+   - **Via Virtual Host Laragon:**
+     Arahkan DocumentRoot virtual host ke folder `public/`, misalnya: `C:/laragon/www/inlislite/public`.
 
 ---
 
-## Sumber & Dukungan
+### 🐧 Opsi 3: Instalasi di Linux Server / VPS (Ubuntu / Debian)
 
-- Dokumentasi resmi CodeIgniter 4: https://codeigniter4.github.io/userguide/
-- Repositori pengembangan CodeIgniter 4: https://github.com/codeigniter4/CodeIgniter4
-- Dikembangkan oleh: Divisi Pusat Data dan Informasi, Perpustakaan Nasional Republik Indonesia
+Untuk deployment di server produksi (VPS / Dedicated Server).
 
-#SalamLiterasi
+1. **Persyaratan Server:**
+   - PHP >= 8.1
+   - Ekstensi PHP wajib: `intl`, `mbstring`, `mysqli`, `curl`, `gd`, `zip`, `xml`, `fileinfo`
+   - Composer
+   - MariaDB / MySQL Server
+   - Web Server (Nginx atau Apache)
+
+2. **Clone & Jalankan Script Installer:**
+   ```bash
+   git clone https://github.com/<username>/<nama-repo>.git /var/www/inlislite
+   cd /var/www/inlislite
+   chmod +x install.sh
+   ./install.sh
+   ```
+
+3. **Buat Database & Import Data:**
+   ```bash
+   mysql -u root -p -e "CREATE DATABASE inlislite_v33 CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+   mysql -u root -p inlislite_v33 < inlislite_v33.sql
+   ```
+
+4. **Konfigurasi Web Server (PENTING!):**
+   > ⚠️ **PERHATIAN:** DocumentRoot web server **wajib** diarahkan ke folder `public/`, **bukan ke root project**.
+
+   **Contoh Konfigurasi Nginx:**
+   ```nginx
+   server {
+       listen 80;
+       server_name perpustakaan.domain-anda.com;
+       root /var/www/inlislite/public;
+       index index.php index.html;
+
+       location / {
+           try_files $uri $uri/ /index.php$is_args$args;
+       }
+
+       location ~ \.php$ {
+           include snippets/fastcgi-php.conf;
+           fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+           fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+           include fastcgi_params;
+       }
+
+       location ~ /\.ht {
+           deny all;
+       }
+   }
+   ```
+
+   **Atur Hak Akses File:**
+   ```bash
+   chown -R www-data:www-data /var/www/inlislite/writable /var/www/inlislite/public/uploads
+   chmod -R 775 /var/www/inlislite/writable /var/www/inlislite/public/uploads
+   ```
+
+---
+
+## 🔑 Akun & Kredensial Login Bawaan
+
+Setelah database berhasil di-import, Anda dapat masuk menggunakan akun default:
+
+| Role | Username / Email | Password Default | Akses URL |
+| :--- | :--- | :--- | :--- |
+| **Administrator Pusat** | `admin` *(atau `admin@admin.com`)* | `P@ssw0rd` | `/login` |
+| **Petugas INLISLite** | `inlislite` *(atau `inlislite@gmail.com`)* | `inlislite` | `/login` |
+| **Pemustaka (OPAC)** | Akses Publik Bebas | - | `/` (Halaman Utama) |
+
+> 🔒 **Tips Keamanan:** Segera ubah password default administrator setelah pertama kali login di menu **Master Akun / Pengguna**.
+
+---
+
+## ⚙️ Penjelasan Konfigurasi `.env`
+
+File konfigurasi utama berada pada `.env` di root project. Beberapa konfigurasi penting:
+
+| Parameter | Keterangan | Nilai Contoh |
+| :--- | :--- | :--- |
+| `CI_ENVIRONMENT` | Lingkungan aplikasi (`development` atau `production`) | `production` |
+| `app.baseURL` | URL dasar aplikasi (wajib berakhiran `/`) | `http://localhost:8080/` |
+| `database.default.hostname` | Host MySQL (`localhost` atau nama service docker `db`) | `localhost` |
+| `database.default.database` | Nama database yang dibuat | `inlislite_v33` |
+| `database.default.username` | Username MySQL | `root` |
+| `database.default.password` | Password MySQL | *(sesuai server Anda)* |
+| `database.default.port` | Port server MySQL | `3306` |
+
+---
+
+## 🛠️ Troubleshooting & Masalah Umum
+
+1. **Halaman Blank Putih atau Error 500:**
+   - Periksa izin folder `writable/` dan pastikan web server memiliki akses tulis:
+     ```bash
+     chmod -R 777 writable
+     ```
+   - Cek log error di `writable/logs/` untuk melihat pesan error spesifik.
+
+2. **Ekstensi `intl` tidak aktif:**
+   - Pada Windows/Laragon/XAMPP: Buka `php.ini`, cari `;extension=intl`, hilangkan tanda titik koma (`;`), lalu restart web server.
+   - Pada Linux: Jalankan `sudo apt install php-intl` dan restart `php-fpm`.
+
+3. **Halaman 404 saat membuka menu atau modul:**
+   - Pastikan modul rewrite Apache aktif (`sudo a2enmod rewrite`).
+   - Pastikan direktif `AllowOverride All` aktif pada konfigurasi VirtualHost Apache.
+   - Jika menggunakan Nginx, pastikan baris `try_files $uri $uri/ /index.php$is_args$args;` sudah ada.
+
+4. **Error "MySQL server has gone away" saat import SQL:**
+   - Ukuran file SQL adalah ~9 MB. Naikkan nilai `max_allowed_packet` di `my.cnf` / `my.ini` menjadi minimal `64M`.
+
+---
+
+## 📄 Lisensi & Kredit
+
+- **Pengembang Asli:** Divisi Pusat Data dan Informasi, Perpustakaan Nasional Republik Indonesia ([Perpusnas RI](https://www.perpusnas.go.id)).
+- **Framework:** [CodeIgniter 4](https://codeigniter.com).
+- Dibagikan untuk memudahkan pengelolaan perpustakaan di seluruh Indonesia.
+
+**#SalamLiterasi**

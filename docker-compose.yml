@@ -1,0 +1,52 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: inlislite_app
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      CI_ENVIRONMENT: development
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mariadb:10.11
+    container_name: inlislite_db
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --max_allowed_packet=64M
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: inlislite_v33
+    ports:
+      - "3306:3306"
+    volumes:
+      - inlislite_db_data:/var/lib/mysql
+      - ./inlislite_v33.sql:/docker-entrypoint-initdb.d/01_inlislite_v33.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: inlislite_pma
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+      UPLOAD_LIMIT: 64M
+    depends_on:
+      - db
+
+volumes:
+  inlislite_db_data:

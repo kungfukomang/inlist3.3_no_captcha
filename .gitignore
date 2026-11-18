@@ -48,7 +48,6 @@ $RECYCLE.BIN/
 .env
 .vagrant
 Vagrantfile
-composer.lock
 public/uploads
 !public/uploads/default
 
@@ -140,3 +139,11 @@ writable/semantic/*
 
 # Dokumentasi lokal
 /dokumentasi/
+
+# Large Archives & Backups (>100MB exceeds GitHub limit)
+*.zip
+*.tar.gz
+*.rar
+*.7z
+sourcecode_inlislitev33.zip
+
